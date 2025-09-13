@@ -16,6 +16,10 @@ function Slidein(selector, options = {}) {
       prevButton: null,
       nextButton: null,
       slideBy: 1,
+      autoplay: false,
+      autoplayTimeout: 3000,
+      autoplayPause: true,
+      autoplayHoverPause: true,
     },
     options
   );
@@ -24,7 +28,33 @@ function Slidein(selector, options = {}) {
   this.currentIndex = this.opt.loop ? this.opt.items : 0;
   this._init();
   this._updatePosition();
+
+  if (this.opt.autoplay) {
+    this._startAutoPlay();
+    if (this.opt.autoplayHoverPause) {
+      this.container.onmouseenter = () => {
+        this._stopAutoPlay();
+      };
+
+      this.container.onmouseleave = () => {
+        this._startAutoPlay();
+      };
+    }
+  }
 }
+
+Slidein.prototype._startAutoPlay = function () {
+  if (this.autoplayTimer) return;
+  const slideBy = this._getSlideBy();
+  this.autoplayTimer = setInterval(() => {
+    this.moveSlide(slideBy);
+  }, this.opt.autoplayTimeout);
+};
+
+Slidein.prototype._stopAutoPlay = function () {
+  clearInterval(this.autoplayTimer);
+  this.autoplayTimer = null;
+};
 
 Slidein.prototype._init = function () {
   this.container.classList.add("slidein-wrapper");
@@ -70,6 +100,10 @@ Slidein.prototype._createTrack = function () {
   this.content.appendChild(this.track);
 };
 
+Slidein.prototype._getSlideBy = function () {
+  return this.opt.slideBy === "page" ? this.opt.items : this.opt.slideBy;
+};
+
 Slidein.prototype._createControls = function () {
   this.prevBtn = this.opt.prevButton
     ? document.querySelector(this.opt.prevButton)
@@ -90,8 +124,7 @@ Slidein.prototype._createControls = function () {
     this.content.appendChild(this.nextBtn);
   }
 
-  const stepSize =
-    this.opt.slideBy === "page" ? this.opt.items : this.opt.slideBy;
+  const stepSize = this._getSlideBy();
 
   this.prevBtn.onclick = () => this.moveSlide(-stepSize);
   this.nextBtn.onclick = () => this.moveSlide(stepSize);

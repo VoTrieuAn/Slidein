@@ -39,8 +39,6 @@
     </style>
   </head>
   <body>
-    <button class="slide-prev">Prev</button>
-    <button class="slide-next">Next</button>
     <div id="my-slider" class="slidein-wrapper">
       <div class="slide-1">item 1</div>
       <div class="slide-2">item 2</div>
@@ -52,12 +50,10 @@
     <script src="./slidein.js"></script>
     <script>
       const slidein = new Slidein("#my-slider", {
-        items: 3,
+        items: 1,
         loop: true,
-        controlTexts: ["Lùi", "Tiến"],
-        prevButton: ".slide-prev",
-        nextButton: ".slide-next",
-        slideBy: 2,
+        slideBy: 1,
+        autoplay: true,
       });
     </script>
   </body>
