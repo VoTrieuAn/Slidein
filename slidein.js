@@ -9,6 +9,7 @@ function Slidein(selector, options = {}) {
     {
       items: 1,
       loop: false,
+      speed: 300,
     },
     options
   );
@@ -28,15 +29,17 @@ Slidein.prototype._createTrack = function () {
   this.track = document.createElement("div");
   this.track.className = "slidein-track";
 
-  const cloneHead = this.slides
-    .slice(-this.opt.items)
-    .map((node) => node.cloneNode(true));
+  if (this.opt.loop) {
+    const cloneHead = this.slides
+      .slice(-this.opt.items)
+      .map((node) => node.cloneNode(true));
 
-  const cloneTail = this.slides
-    .slice(0, this.opt.items)
-    .map((node) => node.cloneNode(true));
+    const cloneTail = this.slides
+      .slice(0, this.opt.items)
+      .map((node) => node.cloneNode(true));
 
-  this.slides = cloneHead.concat(this.slides.concat(cloneTail));
+    this.slides = cloneHead.concat(this.slides.concat(cloneTail));
+  }
 
   this.slides.forEach((slide) => {
     slide.classList.add("slidein-slide");
@@ -66,32 +69,30 @@ Slidein.prototype._createNavigation = function () {
 Slidein.prototype.moveSlide = function (step) {
   if (this._isAnimating) return;
   this._isAnimating = true;
-  if (this.opt.loop) {
-    this.currentIndex =
-      (this.currentIndex + step + this.slides.length) % this.slides.length;
 
-    this.track.ontransitionend = () => {
-      const maxIndex = this.slides.length - this.opt.items;
+  const maxIndex = this.slides.length - this.opt.items;
+  this.currentIndex = Math.min(Math.max(this.currentIndex + step, 0), maxIndex);
+
+  setTimeout(() => {
+    if (this.opt.loop) {
       if (this.currentIndex <= 0) {
         this.currentIndex = maxIndex - this.opt.items;
       } else if (this.currentIndex >= maxIndex) {
         this.currentIndex = this.opt.items;
       }
       this._updatePosition(true);
-      this._isAnimating = false;
-    };
-  } else {
-    this.currentIndex = Math.min(
-      Math.max(this.currentIndex + step, 0),
-      this.slides.length - this.opt.items
-    );
-  }
+    }
+
+    this._isAnimating = false;
+  }, this.opt.speed);
 
   this._updatePosition();
 };
 
 Slidein.prototype._updatePosition = function (instant = false) {
-  this.track.style.transition = instant ? "none" : `transform ease 0.3s`;
+  this.track.style.transition = instant
+    ? "none"
+    : `transform ease ${this.opt.speed}ms`;
   this.offset = -(this.currentIndex * (100 / this.opt.items));
   this.track.style.transform = `translateX(${this.offset}%)`;
 };
