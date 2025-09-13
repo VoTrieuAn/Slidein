@@ -97,13 +97,15 @@ Slidein.prototype._createControls = function () {
   this.nextBtn.onclick = () => this.moveSlide(stepSize);
 };
 
+Slidein.prototype._getSlideCount = function () {
+  return this.slides.length - (this.opt.loop ? this.opt.items * 2 : 0);
+};
+
 Slidein.prototype._createNav = function () {
   this.navWrapper = document.createElement("div");
   this.navWrapper.className = "slidein-nav";
 
-  const slideCount =
-    this.slides.length - (this.opt.loop ? this.opt.items * 2 : 0);
-
+  const slideCount = this._getSlideCount();
   const pageCount = Math.ceil(slideCount / this.opt.items);
 
   for (let i = 0; i < pageCount; i++) {
@@ -132,11 +134,12 @@ Slidein.prototype.moveSlide = function (step) {
 
   setTimeout(() => {
     if (this.opt.loop) {
-      if (this.currentIndex <= 0) {
-        this.currentIndex = maxIndex - this.opt.items;
+      const slideCount = this._getSlideCount();
+      if (this.currentIndex <= this.opt.items) {
+        this.currentIndex += slideCount;
         this._updatePosition(true);
-      } else if (this.currentIndex >= maxIndex) {
-        this.currentIndex = this.opt.items;
+      } else if (this.currentIndex > slideCount) {
+        this.currentIndex -= slideCount;
         this._updatePosition(true);
       }
     }
@@ -173,3 +176,6 @@ Slidein.prototype._updatePosition = function (instant = false) {
     this._updateNav();
   }
 };
+
+// 3 4 5 [1 2 3 4 5] 1 2 3
+// 0 1 2 3 4 5 6 7 8 9 10 11

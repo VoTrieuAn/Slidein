@@ -47,17 +47,17 @@
       <div class="slide-3">item 3</div>
       <div class="slide-4">item 4</div>
       <div class="slide-5">item 5</div>
-      <div class="slide-6">item 6</div>
+      <!-- <div class="slide-6">item 6</div> -->
     </div>
     <script src="./slidein.js"></script>
     <script>
       const slidein = new Slidein("#my-slider", {
-        items: 1,
+        items: 3,
         loop: true,
         controlTexts: ["Lùi", "Tiến"],
         prevButton: ".slide-prev",
         nextButton: ".slide-next",
-        slideBy: "page",
+        slideBy: 2,
       });
     </script>
   </body>
