@@ -11,6 +11,11 @@ function Slidein(selector, options = {}) {
       loop: false,
       speed: 300,
       nav: true,
+      controls: true,
+      controlTexts: ["<", ">"],
+      prevButton: null,
+      nextButton: null,
+      slideBy: 1,
     },
     options
   );
@@ -26,7 +31,9 @@ Slidein.prototype._init = function () {
 
   this._createContent();
   this._createTrack();
-  this._createControls();
+  if (this.opt.controls) {
+    this._createControls();
+  }
   if (this.opt.nav) {
     this._createNav();
   }
@@ -64,19 +71,30 @@ Slidein.prototype._createTrack = function () {
 };
 
 Slidein.prototype._createControls = function () {
-  this.prevBtn = document.createElement("button");
-  this.nextBtn = document.createElement("button");
+  this.prevBtn = this.opt.prevButton
+    ? document.querySelector(this.opt.prevButton)
+    : document.createElement("button");
+  this.nextBtn = this.opt.nextButton
+    ? document.querySelector(this.opt.nextButton)
+    : document.createElement("button");
 
-  this.prevBtn.textContent = "<";
-  this.nextBtn.textContent = ">";
+  if (!this.opt.prevButton) {
+    this.prevBtn.textContent = this.opt.controlTexts[0];
+    this.prevBtn.className = "slidein-prev";
+    this.content.appendChild(this.prevBtn);
+  }
 
-  this.prevBtn.className = "slidein-prev";
-  this.nextBtn.className = "slidein-next";
+  if (!this.opt.nextButton) {
+    this.nextBtn.textContent = this.opt.controlTexts[1];
+    this.nextBtn.className = "slidein-next";
+    this.content.appendChild(this.nextBtn);
+  }
 
-  this.content.append(this.prevBtn, this.nextBtn);
+  const stepSize =
+    this.opt.slideBy === "page" ? this.opt.items : this.opt.slideBy;
 
-  this.prevBtn.onclick = () => this.moveSlide(-1);
-  this.nextBtn.onclick = () => this.moveSlide(1);
+  this.prevBtn.onclick = () => this.moveSlide(-stepSize);
+  this.nextBtn.onclick = () => this.moveSlide(stepSize);
 };
 
 Slidein.prototype._createNav = function () {
