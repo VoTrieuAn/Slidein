@@ -6,8 +6,8 @@ function Slidein(selector, options = {}) {
   }
 
   this.opt = Object.assign({}, options);
-  this.slides = this.container.children;
-
+  this.slides = Array.from(this.container.children);
+  this.currentIndex = 0;
   this._init();
 }
 
@@ -19,9 +19,9 @@ Slidein.prototype._init = function () {
 
 Slidein.prototype._createTrack = function () {
   this.track = document.createElement("div");
-  this.track.classList.add("slidein-track");
+  this.track.className = "slidein-track";
 
-  Array.from(this.slides).forEach((slide) => {
+  this.slides.forEach((slide) => {
     slide.classList.add("slidein-slide");
     this.track.appendChild(slide);
   });
@@ -46,5 +46,12 @@ Slidein.prototype._createNavigation = function () {
 };
 
 Slidein.prototype.moveSlide = function (step) {
-  console.log(step);
+  this.currentIndex = Math.min(
+    Math.max(this.currentIndex + step, 0),
+    this.slides.length - 3
+  );
+
+  this.offset = -(this.currentIndex * (100 / 3));
+
+  this.track.style.transform = `translateX(${this.offset}%)`;
 };
