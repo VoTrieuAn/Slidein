@@ -1,3 +1,6 @@
+.slidein-content {
+  position: relative;
+}
 .slidein-wrapper {
   position: relative;
   width: 100%;
@@ -31,4 +34,25 @@
 
 .slidein-next {
   right: 10px;
+}
+
+.slidein-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.slidein-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background-color: #ccc;
+  cursor: pointer;
+}
+
+.slidein-dot.active {
+  background-color: #333;
 }
