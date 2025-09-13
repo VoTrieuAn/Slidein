@@ -1,0 +1,34 @@
+.slidein-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.slidein-track {
+  display: flex;
+}
+
+.slidein-slide {
+  flex: 0 0 calc(100% / 3);
+}
+
+.slidein-prev,
+.slidein-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  outline: none;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  cursor: pointer;
+}
+
+.slidein-prev {
+  left: 10px;
+}
+
+.slidein-next {
+  right: 10px;
+}
